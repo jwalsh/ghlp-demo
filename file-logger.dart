@@ -5,13 +5,13 @@
 
 startLogging() {
   print('started logger');
-  File log;
+  File logFile;
   OutputStream out;
   port.receive((msg, replyTo) {
     print('received $msg');
-    if (log == null) {
-      log = new File(msg);
-      out = log.openOutputStream(FileMode.APPEND);
+    if (logFile == null) {
+      logFile = new File(msg);
+      out = logFile.openOutputStream(FileMode.APPEND);
     } else {
       time('writeString', () {
         out.writeString("${new Date.now()} : $msg\n");
@@ -20,9 +20,13 @@ startLogging() {
   });
 }
 
-SendPort initLogging(String logFileName) {
-  SendPort send = spawnFunction(startLogging);
-  port.receive((msg, replyTo) => print('enable it to work')); // ???
-  send.send(logFileName);
-  return send;
+SendPort _loggingPort;
+
+void log(String message) {
+  _loggingPort.send(message);
+}
+
+void initLogging(String logFileName) {
+  _loggingPort = spawnFunction(startLogging);
+  _loggingPort.send(logFileName);
 }

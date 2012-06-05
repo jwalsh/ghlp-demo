@@ -10,10 +10,10 @@ class ChatHandler {
   
   static int indexCounter = 0;
   Map<int, WebSocketConnection> connections;
-  SendPort logger;
   
-  ChatHandler() : connections = new Map<int, WebSocketConnection>(),
-      logger = log.initLogging('log.txt');
+  ChatHandler() : connections = new Map<int, WebSocketConnection>() {
+    log.initLogging('log.txt');
+  }
   
   // closures!
   onOpen(WebSocketConnection conn) {
@@ -29,11 +29,13 @@ class ChatHandler {
     conn.onMessage = (message) {
       print('new ws msg: $message from $index');
       connections.forEach((i, connection) {
+        print("should send to $i from $index");
         if (i != index) {
-          connection.send(message);
+          print('sending $message to $i');
+          new Timer(0, (t) => connection.send(message));
         }
       });
-      time('send msg', () => logger.send(message));
+      time('send msg', () => log.log(message));
     };
     
     conn.onError = (e) {
@@ -51,6 +53,7 @@ runServer(String basePath) {
   server.defaultRequestHandler = new StaticFileHandler(basePath).onRequest;
   server.addRequestHandler((req) => req.path == "/ws", wsHandler.onRequest);
   server.listen('127.0.0.1', 1337);
+  print('listening for connections');
 }
 
 main() {
