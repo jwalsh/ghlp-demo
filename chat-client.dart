@@ -69,24 +69,33 @@ class ChatWindow extends View<TextAreaElement> {
   ChatWindow(TextAreaElement elem) : super(elem);
   
   displayMessage(String msg, String from) {
-    elem.text += "$from: $msg\n";
+    _display("$from: $msg\n");
+  }
+  
+  displayNotice(String notice) {
+    _display("[system]: $notice\n");
+  }
+  
+  _display(String str) {
+    elem.text += str;
   }
 }
 
 void initWebSocket() {
+  chatWindow.displayNotice("Connecting to Web socket");
   ws = new WebSocket('ws://localhost:1337/ws');
   
   ws.on.open.add((e) {
-    print('web socket connected');
+    chatWindow.displayNotice('Connected');
   });
   
   ws.on.close.add((e) {
-    print('web socket closed');
+    chatWindow.displayNotice('web socket closed');
     window.setTimeout(initWebSocket, 1000);
   });
   
   ws.on.error.add((e) {
-    print("Error connecting to ws");
+    chatWindow.displayNotice("Error connecting to ws");
     window.setTimeout(initWebSocket, 1000);
   });
   
