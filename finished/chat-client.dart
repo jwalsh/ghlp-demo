@@ -77,7 +77,7 @@ class ChatWindow extends View<TextAreaElement> {
   }
   
   _display(String str) {
-    elem.text += str;
+    elem.text = "${elem.text}$str";
   }
 }
 
