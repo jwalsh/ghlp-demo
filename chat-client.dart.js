@@ -306,7 +306,7 @@ Isolate.$defineClass("HashSetImplementation", "Object", ["_backingMap?"], {
  forEach$1: function(f) {
   var t0 = ({});
   t0.f_1 = f;
-  $.forEach(this._backingMap, new $.Closure14(t0));
+  $.forEach(this._backingMap, new $.Closure16(t0));
  },
  contains$1: function(value) {
   return this._backingMap.containsKey$1(value);
@@ -672,7 +672,7 @@ Isolate.$defineClass("ListIterator", "Object", ["list", "i"], {
  }
 });
 
-Isolate.$defineClass("Closure15", "Object", [], {
+Isolate.$defineClass("Closure17", "Object", [], {
  toString$0: function() {
   return 'Closure';
  }
@@ -814,7 +814,7 @@ Isolate.$defineClass("View", "Object", ["elem?"], {
 
 Isolate.$defineClass("MessageInput", "View", ["elem"], {
  bind$0: function() {
-  $.add$1(this.elem.get$on().get$change(), new $.Closure11(this));
+  $.add$1(this.elem.get$on().get$change(), new $.Closure13(this));
  },
  get$message: function() {
   return this.elem.get$value();
@@ -845,14 +845,20 @@ Isolate.$defineClass("UsernameInput", "View", ["elem"], {
   this._enableMessageInput$0();
  },
  bind$0: function() {
-  $.add$1(this.elem.get$on().get$change(), new $.Closure13(this));
+  $.add$1(this.elem.get$on().get$change(), new $.Closure15(this));
  }
 });
 
 Isolate.$defineClass("ChatWindow", "View", ["elem"], {
- displayMessage$2: function(msg, from) {
+ _display$1: function(str) {
   var t0 = this.elem;
-  t0.set$text($.add(t0.get$text(), '' + $.stringToString(from) + ': ' + $.stringToString(msg) + '\n'));
+  t0.set$text($.add(t0.get$text(), str));
+ },
+ displayNotice$1: function(notice) {
+  this._display$1('[system]: ' + $.stringToString(notice) + '\n');
+ },
+ displayMessage$2: function(msg, from) {
+  this._display$1('' + $.stringToString(from) + ': ' + $.stringToString(msg) + '\n');
  }
 });
 
@@ -1579,7 +1585,7 @@ Isolate.$defineClass("JsonStringifier", "Object", ["_seen", "_sb?"], {
                 this._checkCycle$1(object);
                 $.add$1(this._sb, '{');
                 t0.first_1 = true;
-                object.forEach$1(new $.Closure12(this, t0));
+                object.forEach$1(new $.Closure14(this, t0));
                 $.add$1(this._sb, '}');
                 $.removeLast(this._seen);
                 return;
@@ -1667,7 +1673,7 @@ Isolate.$defineClass("JsonStringifier", "Object", ["_seen", "_sb?"], {
                                         this._checkCycle$1(object);
                                         $.add$1(this._sb, '{');
                                         t0.first_1 = true;
-                                        object.forEach$1(new $.Closure12(this, t0));
+                                        object.forEach$1(new $.Closure14(this, t0));
                                         $.add$1(this._sb, '}');
                                         $.removeLast(this._seen);
                                         return;
@@ -1701,27 +1707,39 @@ Isolate.$defineClass("JsonStringifier", "Object", ["_seen", "_sb?"], {
  }
 });
 
-Isolate.$defineClass("Closure", "Closure15", [], {
+Isolate.$defineClass("Closure", "Closure17", [], {
  $call$1: function(e) {
-  $.print('web socket connected');
+  $.chatWindow.displayNotice$1('Connected');
  }
 });
 
-Isolate.$defineClass("Closure2", "Closure15", [], {
+Isolate.$defineClass("Closure2", "Closure17", ["box_0"], {
  $call$1: function(e) {
-  $.print('web socket closed');
-  $.window().setTimeout$2($.initWebSocket, 1000);
+  $.chatWindow.displayNotice$1('web socket closed, retrying in ' + $.stringToString(this.box_0.retrySeconds_1) + ' seconds');
+  $.window().setTimeout$2(new $.Closure12(this.box_0), $.mul(1000, this.box_0.retrySeconds_1));
  }
 });
 
-Isolate.$defineClass("Closure3", "Closure15", [], {
- $call$1: function(e) {
-  $.print('Error connecting to ws');
-  $.window().setTimeout$2($.initWebSocket, 1000);
+Isolate.$defineClass("Closure12", "Closure17", ["box_0"], {
+ $call$0: function() {
+  return $.initWebSocket($.mul(this.box_0.retrySeconds_1, 2));
  }
 });
 
-Isolate.$defineClass("Closure4", "Closure15", [], {
+Isolate.$defineClass("Closure3", "Closure17", ["box_0"], {
+ $call$1: function(e) {
+  $.chatWindow.displayNotice$1('Error connecting to ws');
+  $.window().setTimeout$2(new $.Closure11(this.box_0), $.mul(1000, this.box_0.retrySeconds_1));
+ }
+});
+
+Isolate.$defineClass("Closure11", "Closure17", ["box_0"], {
+ $call$0: function() {
+  return $.initWebSocket($.mul(this.box_0.retrySeconds_1, 2));
+ }
+});
+
+Isolate.$defineClass("Closure4", "Closure17", [], {
  $call$1: function(e) {
   $.print('received message ' + $.stringToString(e.get$data()));
   var msg = $.parse(e.get$data());
@@ -1733,7 +1751,7 @@ Isolate.$defineClass("Closure4", "Closure15", [], {
  }
 });
 
-Isolate.$defineClass("Closure5", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure5", "Closure17", ["box_0"], {
  $call$2: function(k, v) {
   if (this.box_0.first_3 !== true) {
     $.add$1(this.box_0.result_1, ', ');
@@ -1746,38 +1764,38 @@ Isolate.$defineClass("Closure5", "Closure15", ["box_0"], {
  }
 });
 
-Isolate.$defineClass("Closure6", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure6", "Closure17", ["box_0"], {
  $call$0: function() {
   return this.box_0.closure_1.$call$0();
  }
 });
 
-Isolate.$defineClass("Closure7", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure7", "Closure17", ["box_0"], {
  $call$0: function() {
   return this.box_0.closure_1.$call$1(this.box_0.arg1_2);
  }
 });
 
-Isolate.$defineClass("Closure8", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure8", "Closure17", ["box_0"], {
  $call$0: function() {
   return this.box_0.closure_1.$call$2(this.box_0.arg1_2, this.box_0.arg2_3);
  }
 });
 
-Isolate.$defineClass("Closure9", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure9", "Closure17", ["box_0"], {
  $call$1: function(element) {
   var counter = $.add(this.box_0.counter_1, 1);
   this.box_0.counter_1 = counter;
  }
 });
 
-Isolate.$defineClass("Closure10", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure10", "Closure17", ["box_0"], {
  $call$1: function(entry) {
   this.box_0.f_1.$call$2(entry.get$key(), entry.get$value());
  }
 });
 
-Isolate.$defineClass("Closure11", "Closure15", ["this_0"], {
+Isolate.$defineClass("Closure13", "Closure17", ["this_0"], {
  $call$1: function(e) {
   $.ws.send$1($.stringify($.makeLiteralMap(['f', $.usernameInput.get$username(), 'm', this.this_0.get$message()])));
   $.chatWindow.displayMessage$2(this.this_0.get$message(), $.usernameInput.get$username());
@@ -1785,7 +1803,7 @@ Isolate.$defineClass("Closure11", "Closure15", ["this_0"], {
  }
 });
 
-Isolate.$defineClass("Closure12", "Closure15", ["this_2", "box_0"], {
+Isolate.$defineClass("Closure14", "Closure17", ["this_2", "box_0"], {
  $call$2: function(key, value) {
   if (this.box_0.first_1 !== true) {
     $.add$1(this.this_2.get$_sb(), ',"');
@@ -1799,31 +1817,31 @@ Isolate.$defineClass("Closure12", "Closure15", ["this_2", "box_0"], {
  }
 });
 
-Isolate.$defineClass("Closure13", "Closure15", ["this_0"], {
+Isolate.$defineClass("Closure15", "Closure17", ["this_0"], {
  $call$1: function(e) {
   return this.this_0._onUsernameChange$0();
  }
 });
 
-Isolate.$defineClass("Closure14", "Closure15", ["box_0"], {
+Isolate.$defineClass("Closure16", "Closure17", ["box_0"], {
  $call$2: function(key, value) {
   this.box_0.f_1.$call$1(key);
  }
 });
 
-Isolate.$defineClass("Closure15", "Object", [], {
+Isolate.$defineClass("Closure17", "Object", [], {
  toString$0: function() {
   return 'Closure';
  }
 });
 
-Isolate.$defineClass('Closure16', 'Closure15', ['self', 'target'], {
+Isolate.$defineClass('Closure18', 'Closure17', ['self', 'target'], {
 $call$1: function(p0) { return this.self[this.target](p0); }
 });
-Isolate.$defineClass('Closure17', 'Closure15', ['self', 'target'], {
+Isolate.$defineClass('Closure19', 'Closure17', ['self', 'target'], {
 $call$0: function() { return this.self[this.target](); }
 });
-Isolate.$defineClass('Closure18', 'Closure15', ['self', 'target'], {
+Isolate.$defineClass('Closure20', 'Closure17', ['self', 'target'], {
 $call$2: function(p0, p1) { return this.self[this.target](p0, p1); },
  $call$0: function() {
   return this.$call$2((void 0),(void 0))
@@ -1832,13 +1850,13 @@ $call$2: function(p0, p1) { return this.self[this.target](p0, p1); },
   return this.$call$2(code,(void 0))
 }
 });
-Isolate.$defineClass('Closure19', 'Closure15', ['self', 'target'], {
+Isolate.$defineClass('Closure21', 'Closure17', ['self', 'target'], {
 $call$3: function(p0, p1, p2) { return this.self[this.target](p0, p1, p2); },
  $call$2: function(url,name$) {
   return this.$call$3(url,name$,(void 0))
 }
 });
-Isolate.$defineClass('Closure20', 'Closure15', ['self', 'target'], {
+Isolate.$defineClass('Closure22', 'Closure17', ['self', 'target'], {
 $call$5: function(p0, p1, p2, p3, p4) { return this.self[this.target](p0, p1, p2, p3, p4); },
  $call$2: function(method,url) {
   return this.$call$5(method,url,(void 0),(void 0),(void 0))
@@ -2010,11 +2028,14 @@ $.substringUnchecked = function(receiver, startIndex, endIndex) {
   return receiver.substring(startIndex, endIndex);
 };
 
-$.initWebSocket = function() {
+$.initWebSocket = function(retrySeconds) {
+  var t0 = ({});
+  t0.retrySeconds_1 = retrySeconds;
+  $.chatWindow.displayNotice$1('Connecting to Web socket');
   $.ws = $.WebSocket('ws://localhost:1337/ws');
   $.add$1($.ws.get$on().get$open(), new $.Closure());
-  $.add$1($.ws.get$on().get$close(), new $.Closure2());
-  $.add$1($.ws.get$on().get$error(), new $.Closure3());
+  $.add$1($.ws.get$on().get$close(), new $.Closure2(t0));
+  $.add$1($.ws.get$on().get$error(), new $.Closure3(t0));
   $.add$1($.ws.get$on().get$message(), new $.Closure4());
 };
 
@@ -3822,7 +3843,7 @@ $.main = function() {
   $.chatWindow = $.ChatWindow$1($.document().query$1('#chat-display'));
   $.messageInput = $.MessageInput$1($.document().query$1('#chat-input'));
   $.usernameInput = $.UsernameInput$1($.document().query$1('#chat-username'));
-  $.initWebSocket();
+  $.initWebSocket(2);
 };
 
 $._AbstractWorkerEventsImpl$1 = function(_ptr) {
@@ -4198,13 +4219,12 @@ $.buildDynamicMetadata$bailout = function(inputTable, state, env0, env1, env2, e
   }
 };
 
-$.initWebSocket.$call$0 = $.initWebSocket;
 $.dynamicBind.$call$4 = $.dynamicBind;
 $.throwNoSuchMethod.$call$3 = $.throwNoSuchMethod;
-$.invokeClosure.$call$5 = $.invokeClosure;
+$.typeNameInIE.$call$1 = $.typeNameInIE;
 $.typeNameInChrome.$call$1 = $.typeNameInChrome;
 $.toStringWrapper.$call$0 = $.toStringWrapper;
-$.typeNameInIE.$call$1 = $.typeNameInIE;
+$.invokeClosure.$call$5 = $.invokeClosure;
 $.typeNameInFirefox.$call$1 = $.typeNameInFirefox;
 $.constructorNameFallback.$call$1 = $.constructorNameFallback;
 Isolate.$finishClasses();
@@ -4353,7 +4373,7 @@ _ConsoleImpl = (typeof console == 'undefined' ? {} : console);
 _ConsoleImpl.error$1 = function(arg) {
   return this.error(arg);
  };
-_ConsoleImpl.get$error = function() { return new $.Closure16(this, 'error$1'); };
+_ConsoleImpl.get$error = function() { return new $.Closure18(this, 'error$1'); };
 $.$defineNativeClass('DOMApplicationCache', [], {
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
@@ -4461,7 +4481,7 @@ $.$defineNativeClass('DeprecatedPeerConnection', [], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -4542,7 +4562,7 @@ $.$defineNativeClass('EventSource', [], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -4770,7 +4790,7 @@ $.$defineNativeClass('IDBDatabase', [], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -4789,7 +4809,7 @@ $.$defineNativeClass('IDBFactory', [], {
  open$1: function(name) {
   return this.open(name);
  },
- get$open: function() { return new $.Closure16(this, 'open$1'); }
+ get$open: function() { return new $.Closure18(this, 'open$1'); }
 });
 
 $.$defineNativeClass('IDBObjectStore', [], {
@@ -5045,7 +5065,7 @@ $.$defineNativeClass('MessagePort', [], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -5184,7 +5204,7 @@ $.$defineNativeClass('Notification', ["tag?"], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -5218,7 +5238,7 @@ $.$defineNativeClass('PeerConnection00', [], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -5638,7 +5658,7 @@ $.$defineNativeClass('WebSocket', [], {
  close$2: function(code, reason) {
   return this.close(code,reason);
  },
- get$close: function() { return new $.Closure18(this, 'close$2'); },
+ get$close: function() { return new $.Closure20(this, 'close$2'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -5654,11 +5674,11 @@ $.$defineNativeClass('DOMWindow', ["length?"], {
  open$3: function(url, name, options) {
   return this.open(url,name,options);
  },
- get$open: function() { return new $.Closure19(this, 'open$3'); },
+ get$open: function() { return new $.Closure21(this, 'open$3'); },
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -5680,7 +5700,7 @@ $.$defineNativeClass('WorkerContext', [], {
  close$0: function() {
   return this.close();
  },
- get$close: function() { return new $.Closure17(this, 'close$0'); },
+ get$close: function() { return new $.Closure19(this, 'close$0'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
@@ -5706,7 +5726,7 @@ $.$defineNativeClass('XMLHttpRequest', [], {
  open$5: function(method, url, async, user, password) {
   return this.open(method,url,async,user,password);
  },
- get$open: function() { return new $.Closure20(this, 'open$5'); },
+ get$open: function() { return new $.Closure22(this, 'open$5'); },
  $dom_addEventListener$3: function(type, listener, useCapture) {
   return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
  },
