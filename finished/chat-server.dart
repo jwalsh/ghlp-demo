@@ -59,6 +59,6 @@ runServer(String basePath) {
 main() {
   File script = new File(new Options().script);
   script.directory().then((Directory d) {
-    runServer(d.path);
+    runServer("${d.path}/static");
   });
 }
