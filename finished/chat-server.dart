@@ -45,7 +45,7 @@ class ChatHandler {
   }
 }
 
-runServer(String basePath) {
+runServer(String basePath, int port) {
   HttpServer server = new HttpServer();
   WebSocketHandler wsHandler = new WebSocketHandler();
   wsHandler.onOpen = new ChatHandler().onOpen;
@@ -53,12 +53,12 @@ runServer(String basePath) {
   server.defaultRequestHandler = new StaticFileHandler(basePath).onRequest;
   server.addRequestHandler((req) => req.path == "/ws", wsHandler.onRequest);
   server.listen('127.0.0.1', 1337);
-  print('listening for connections');
+  print('listening for connections on $port');
 }
 
 main() {
   File script = new File(new Options().script);
   script.directory().then((Directory d) {
-    runServer("${d.path}/static");
+    runServer("${d.path}/static", 1337);
   });
 }
