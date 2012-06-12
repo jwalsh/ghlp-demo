@@ -76,7 +76,6 @@ class UsernameInput extends View {
   }
   
   _onUsernameChange() {
-    ws.send(JSON.stringify({'usernameChange': username}));
     _enableMessageInput();
   }
   
