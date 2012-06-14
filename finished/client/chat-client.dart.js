@@ -1686,7 +1686,10 @@ Isolate.$defineClass("Closure", "Closure17", [], {
 Isolate.$defineClass("Closure2", "Closure17", ["box_0"], {
  $call$1: function(e) {
   $.chatWindow.displayNotice$1('web socket closed, retrying in ' + $.S(this.box_0.retrySeconds_1) + ' seconds');
-  $.window().setTimeout$2(new $.Closure12(this.box_0), $.mul(1000, this.box_0.retrySeconds_1));
+  if (this.box_0.encounteredError_2 !== true) {
+    $.window().setTimeout$2(new $.Closure12(this.box_0), $.mul(1000, this.box_0.retrySeconds_1));
+  }
+  this.box_0.encounteredError_2 = true;
  }
 });
 
@@ -1699,7 +1702,10 @@ Isolate.$defineClass("Closure12", "Closure17", ["box_0"], {
 Isolate.$defineClass("Closure3", "Closure17", ["box_0"], {
  $call$1: function(e) {
   $.chatWindow.displayNotice$1('Error connecting to ws');
-  $.window().setTimeout$2(new $.Closure11(this.box_0), $.mul(1000, this.box_0.retrySeconds_1));
+  if (this.box_0.encounteredError_2 !== true) {
+    $.window().setTimeout$2(new $.Closure11(this.box_0), $.mul(1000, this.box_0.retrySeconds_1));
+  }
+  this.box_0.encounteredError_2 = true;
  }
 });
 
@@ -1975,6 +1981,7 @@ $.substringUnchecked = function(receiver, startIndex, endIndex) {
 $.initWebSocket = function(retrySeconds) {
   var t1 = ({});
   t1.retrySeconds_1 = retrySeconds;
+  t1.encounteredError_2 = false;
   $.chatWindow.displayNotice$1('Connecting to Web socket');
   $.ws = $.WebSocket('ws://localhost:1337/ws');
   $.add$1($.ws.get$on().get$open(), new $.Closure());
@@ -2858,7 +2865,7 @@ $.dynamicFunction = function(name$) {
     return f.methods;
   }
   var methods = ({});
-  var dartMethod = (Object.getPrototypeOf($.CTC7)[name$]);
+  var dartMethod = (Object.getPrototypeOf($.CTC8)[name$]);
   if (!(dartMethod === (void 0))) {
     methods['Object'] = dartMethod;
   }
@@ -3512,9 +3519,9 @@ $.newList = function(length$) {
 };
 
 $.main = function() {
-  $.chatWindow = $.ChatWindow$1($.document().get$body());
-  $.usernameInput = $.UsernameInput$1($.document().get$body());
-  $.messageInput = $.MessageInput$1($.document().get$body());
+  $.chatWindow = $.ChatWindow$1($.document().query$1('#chat-display'));
+  $.usernameInput = $.UsernameInput$1($.document().query$1('#chat-username'));
+  $.messageInput = $.MessageInput$1($.document().query$1('#chat-message'));
   $.initWebSocket(2);
 };
 
@@ -3830,9 +3837,10 @@ Isolate.makeConstantList = function(list) {
 };
 $.CTC = Isolate.makeConstantList([]);
 $.CTC6 = new Isolate.$isolateProperties.JsonUnsupportedObjectType();
+$.CTC7 = new Isolate.$isolateProperties.JSSyntaxRegExp(false, false, '^#[_a-zA-Z]\\w*$');
 $.CTC5 = new Isolate.$isolateProperties._DeletedKeySentinel();
 $.CTC2 = new Isolate.$isolateProperties.JSSyntaxRegExp(false, false, 'Chrome|DumpRenderTree');
-$.CTC7 = new Isolate.$isolateProperties.Object();
+$.CTC8 = new Isolate.$isolateProperties.Object();
 $.CTC3 = new Isolate.$isolateProperties.NoMoreElementsException();
 $.CTC4 = new Isolate.$isolateProperties.EmptyQueueException();
 $.messageInput = (void 0);
@@ -4087,28 +4095,52 @@ $.$defineNativeClass('DeprecatedPeerConnection', [], {
 $.$defineNativeClass('HTMLDetailsElement', ["open?"], {
 });
 
-$.$defineNativeClass('HTMLDocument', ["body?"], {
+$.$defineNativeClass('HTMLDocument', [], {
+ query$1: function(selectors) {
+  if ($.CTC7.hasMatch$1(selectors) === true) {
+    return this.$dom_getElementById$1($.substring$1(selectors, 1));
+  }
+  return this.$dom_querySelector$1(selectors);
+ },
+ $dom_querySelector$1: function(selectors) {
+  return this.querySelector(selectors);
+ },
+ $dom_getElementById$1: function(elementId) {
+  return this.getElementById(elementId);
+ },
  get$on: function() {
   return $._DocumentEventsImpl$1(this);
  }
 });
 
 $.$defineNativeClass('DocumentFragment', [], {
+ $dom_querySelector$1: function(selectors) {
+  return this.querySelector(selectors);
+ },
  get$on: function() {
   return $._ElementEventsImpl$1(this);
  },
  get$parent: function() {
   return;
+ },
+ query$1: function(selectors) {
+  return this.$dom_querySelector$1(selectors);
  }
 });
 
 $.$defineNativeClass('Element', [], {
+ $dom_querySelector$1: function(selectors) {
+  return this.querySelector(selectors);
+ },
  get$on: function() {
   if (Object.getPrototypeOf(this).hasOwnProperty('get$on')) {
     return $._ElementEventsImpl$1(this);
   } else {
     return Object.prototype.get$on.call(this);
   }
+ },
+ query$1: function(selectors) {
+  return this.$dom_querySelector$1(selectors);
  }
 });
 

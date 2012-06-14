@@ -83,6 +83,8 @@ class ChatWindow extends View<TextAreaElement> {
 }
 
 void initWebSocket([int retrySeconds = 2]) {
+  bool encounteredError = false;
+  
   chatWindow.displayNotice("Connecting to Web socket");
   ws = new WebSocket('ws://localhost:1337/ws');
   
@@ -92,12 +94,18 @@ void initWebSocket([int retrySeconds = 2]) {
   
   ws.on.close.add((e) {
     chatWindow.displayNotice('web socket closed, retrying in $retrySeconds seconds');
-    window.setTimeout(() => initWebSocket(retrySeconds*2), 1000*retrySeconds);
+    if (!encounteredError) {
+      window.setTimeout(() => initWebSocket(retrySeconds*2), 1000*retrySeconds);
+    }
+    encounteredError = true;
   });
   
   ws.on.error.add((e) {
     chatWindow.displayNotice("Error connecting to ws");
-    window.setTimeout(() => initWebSocket(retrySeconds*2), 1000*retrySeconds);
+    if (!encounteredError) {
+      window.setTimeout(() => initWebSocket(retrySeconds*2), 1000*retrySeconds);
+    }
+    encounteredError = true;
   });
   
   ws.on.message.add((e) {
