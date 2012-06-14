@@ -112,7 +112,7 @@ void initWebSocket([int retrySeconds = 2]) {
 main() {
   chatWindow = new ChatWindow(document.query('#chat-display'));
   usernameInput = new UsernameInput(document.query('#chat-username'));
-  messageInput = new MessageInput(document.query('#chat-input'));
+  messageInput = new MessageInput(document.query('#chat-message'));
   
   initWebSocket();
 }

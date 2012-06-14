@@ -9,6 +9,7 @@ startLogging() {
   OutputStream out;
   port.receive((msg, replyTo) {
     if (logFile == null) {
+      print("Opening file $msg");
       logFile = new File(msg);
       out = logFile.openOutputStream(FileMode.APPEND);
     } else {
