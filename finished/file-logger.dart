@@ -1,7 +1,7 @@
 #library('file-logger');
 #import('dart:isolate');
 #import('dart:io');
-#import('utils.dart');
+#import('server-utils.dart');
 
 startLogging() {
   print('started logger');

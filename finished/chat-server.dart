@@ -4,43 +4,39 @@
 
 #import('dart:isolate');
 #import('file-logger.dart', prefix: 'log');
-#import('utils.dart');
+#import('server-utils.dart');
 
 class ChatHandler {
   
-  static int indexCounter = 0;
-  Map<int, WebSocketConnection> connections;
+  Set<WebSocketConnection> connections;
   
-  ChatHandler() : connections = new Map<int, WebSocketConnection>() {
-    log.initLogging('log.txt');
+  ChatHandler() : connections = new Set<WebSocketConnection>() {
+    log.initLogging('chat-log.txt');
   }
   
   // closures!
   onOpen(WebSocketConnection conn) {
-    final int index = indexCounter++;
-    print('new ws conn $index');
-    connections[index] = conn;
+    print('new ws conn');
+    connections.add(conn);
     
     conn.onClosed = (int status, String reason) {
-      print('conn $index is closed');
-      connections.remove(index);
+      print('conn is closed');
+      connections.remove(conn);
     };
     
     conn.onMessage = (message) {
-      print('new ws msg: $message from $index');
-      connections.forEach((i, connection) {
-        print("should send to $i from $index");
-        if (i != index) {
-          print('sending $message to $i');
-          new Timer(0, (t) => connection.send(message));
+      print('new ws msg: $message');
+      connections.forEach((connection) {
+        if (conn != connection) {
+          queue(() => connection.send(message));
         }
       });
       time('send msg', () => log.log(message));
     };
     
     conn.onError = (e) {
-      print("problem w/ conn $index: $e");
-      connections.remove(index); // onClosed isn't being called ??
+      print("problem w/ conn");
+      connections.remove(conn); // onClosed isn't being called ??
     };
   }
 }
@@ -57,8 +53,7 @@ runServer(String basePath, int port) {
 }
 
 main() {
-  File script = new File(new Options().script);
-  script.directory().then((Directory d) {
-    runServer("${d.path}/static", 1337);
-  });
+  var script = new File(new Options().script);
+  var directory = script.directorySync();
+  runServer("${directory.path}/static", 1337);
 }

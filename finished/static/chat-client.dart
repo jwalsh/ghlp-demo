@@ -1,4 +1,5 @@
 #library('chat-client');
+
 #import('dart:html');
 #import('dart:json');
 
@@ -7,34 +8,19 @@ MessageInput messageInput;
 UsernameInput usernameInput;
 ChatWindow chatWindow;
 
-abstract class View {
-  final Element parent;
+abstract class View<T> {
+  final T elem;
   
-  View(this.parent) {
-    create();
+  View(this.elem) {
     bind();
   }
-  
-  abstract void create();
   
   // bind to event listeners
   void bind() { }
 }
 
-class MessageInput extends View {
-  InputElement elem;
-  MessageInput(Element parent) : super(parent);
-  
-  create() {
-    var div = new DivElement();
-    div.nodes.add(new Text("Message:"));
-    elem = new InputElement();
-    elem.id = 'chat-message';
-    elem.type = 'text';
-    elem.disabled = true;
-    div.elements.add(elem);
-    parent.elements.add(div);
-  }
+class MessageInput extends View<InputElement> {
+  MessageInput(InputElement elem) : super(elem);
   
   disable() {
     elem.disabled = true;
@@ -57,19 +43,8 @@ class MessageInput extends View {
   }
 }
 
-class UsernameInput extends View {
-  InputElement elem;
-  UsernameInput(Element parent) : super(parent);
-  
-  create() {
-    var div = new DivElement();
-    div.nodes.add(new Text("Username"));
-    elem = new InputElement();
-    elem.id = 'chat-username';
-    elem.type = 'text';
-    div.elements.add(elem);
-    parent.elements.add(div);
-  }
+class UsernameInput extends View<InputElement> {
+  UsernameInput(InputElement elem) : super(elem);
   
   bind() {
     elem.on.change.add((e) => _onUsernameChange());
@@ -91,20 +66,8 @@ class UsernameInput extends View {
   String get username() => elem.value;
 }
 
-class ChatWindow extends View {
-  TextAreaElement elem;
-  ChatWindow(Element parent) : super(parent);
-  
-  create() {
-    var div = new DivElement();
-    elem = new TextAreaElement();
-    elem.id = 'chat-display';
-    elem.rows = 10;
-    elem.cols = 100;
-    elem.disabled = true;
-    div.elements.add(elem);
-    parent.elements.add(div);
-  }
+class ChatWindow extends View<TextAreaElement> {
+  ChatWindow(TextAreaElement elem) : super(elem);
   
   displayMessage(String msg, String from) {
     _display("$from: $msg\n");
@@ -140,7 +103,6 @@ void initWebSocket([int retrySeconds = 2]) {
   ws.on.message.add((e) {
     print('received message ${e.data}');
     var msg = JSON.parse(e.data);
-    print(msg);
     if (msg['f'] != null) {
       chatWindow.displayMessage(msg['m'], msg['f']);
     }
