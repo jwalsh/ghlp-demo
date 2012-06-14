@@ -39,8 +39,8 @@ class ChatHandler {
   
   Set<WebSocketConnection> connections;
   
-  ChatHandler() : connections = new Set<WebSocketConnection>() {
-    log.initLogging('client/chat-log.txt');
+  ChatHandler(String basePath) : connections = new Set<WebSocketConnection>() {
+    log.initLogging('${basePath}/client/chat-log.txt');
   }
   
   // closures!
@@ -73,7 +73,7 @@ class ChatHandler {
 runServer(String basePath, int port) {
   HttpServer server = new HttpServer();
   WebSocketHandler wsHandler = new WebSocketHandler();
-  wsHandler.onOpen = new ChatHandler().onOpen;
+  wsHandler.onOpen = new ChatHandler(basePath).onOpen;
   
   server.defaultRequestHandler = new StaticFileHandler(basePath).onRequest;
   server.addRequestHandler((req) => req.path == "/ws", wsHandler.onRequest);
