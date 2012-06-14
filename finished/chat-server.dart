@@ -40,7 +40,7 @@ class ChatHandler {
   Set<WebSocketConnection> connections;
   
   ChatHandler(String basePath) : connections = new Set<WebSocketConnection>() {
-    log.initLogging('${basePath}/client/chat-log.txt');
+    log.initLogging('${basePath}/chat-log.txt');
   }
   
   // closures!
