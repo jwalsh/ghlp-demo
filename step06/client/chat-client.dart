@@ -3,10 +3,39 @@
 #import('dart:html');
 #import('dart:json');
 
-WebSocket ws;
+ChatConnection chatConnection;
 MessageInput messageInput;
 UsernameInput usernameInput;
 ChatWindow chatWindow;
+
+class ChatConnection {
+  // Step 06, add webSocket instance field
+  String url;
+  
+  ChatConnection(this.url) {
+    _init();
+  }
+  
+  send(String from, String message) {
+    var encoded = JSON.stringify({'f': from, 'm': message});
+    _sendEncodedMessage(encoded);
+  }
+  
+  _receivedEncodedMessage(String encodedMessage) {
+    Map message = JSON.parse(encodedMessage);
+    if (message['f'] != null) {
+      chatWindow.displayMessage(message['m'], message['f']);
+    }
+  }
+  
+  _sendEncodedMessage(String encodedMessage) {
+    // Step 6, send the message over the WebSocket
+  }
+  
+  _init() {
+    // Step 6, connect to the WebSocket, listen for events
+  }
+}
 
 abstract class View<T> {
   final T elem;
@@ -36,7 +65,7 @@ class MessageInput extends View<InputElement> {
   
   bind() {
     elem.on.change.add((e) {
-      ws.send(JSON.stringify({'f': usernameInput.username, 'm': message}));
+      chatConnection.send(usernameInput.username, message);
       chatWindow.displayMessage(message, usernameInput.username);
       elem.value = '';
     });
@@ -51,7 +80,6 @@ class UsernameInput extends View<InputElement> {
   }
   
   _onUsernameChange() {
-    ws.send(JSON.stringify({'usernameChange': username}));
     _enableMessageInput();
   }
   
@@ -82,45 +110,9 @@ class ChatWindow extends View<TextAreaElement> {
   }
 }
 
-void initWebSocket([int retrySeconds = 2]) {
-  bool encounteredError = false;
-  
-  chatWindow.displayNotice("Connecting to Web socket");
-  ws = new WebSocket('ws://localhost:1337/ws');
-  
-  ws.on.open.add((e) {
-    chatWindow.displayNotice('Connected');
-  });
-  
-  ws.on.close.add((e) {
-    chatWindow.displayNotice('web socket closed, retrying in $retrySeconds seconds');
-    if (!encounteredError) {
-      window.setTimeout(() => initWebSocket(retrySeconds*2), 1000*retrySeconds);
-    }
-    encounteredError = true;
-  });
-  
-  ws.on.error.add((e) {
-    chatWindow.displayNotice("Error connecting to ws");
-    if (!encounteredError) {
-      window.setTimeout(() => initWebSocket(retrySeconds*2), 1000*retrySeconds);
-    }
-    encounteredError = true;
-  });
-  
-  ws.on.message.add((e) {
-    print('received message ${e.data}');
-    var msg = JSON.parse(e.data);
-    if (msg['f'] != null) {
-      chatWindow.displayMessage(msg['m'], msg['f']);
-    }
-  });
-}
-
 main() {
   chatWindow = new ChatWindow(document.query('#chat-display'));
   usernameInput = new UsernameInput(document.query('#chat-username'));
   messageInput = new MessageInput(document.query('#chat-message'));
-  
-  initWebSocket();
+  chatConnection = new ChatConnection("ws://127.0.0.1:1337/ws");
 }

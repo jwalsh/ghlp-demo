@@ -17,24 +17,28 @@ class ChatConnection {
   }
   
   send(String from, String message) {
-    if (webSocket == null || webSocket.readyState != WebSocket.OPEN) {
-      print('WebSocket not connected, message $message not sent');
-    } else {
-      var encoded = JSON.stringify({'f': from, 'm': message});
-      webSocket.send(encoded);
-    }
+    var encoded = JSON.stringify({'f': from, 'm': message});
+    _sendEncodedMessage(encoded);
   }
   
-  _receivedMessage(String encodedMessage) {
+  _receivedEncodedMessage(String encodedMessage) {
     Map message = JSON.parse(encodedMessage);
     if (message['f'] != null) {
       chatWindow.displayMessage(message['m'], message['f']);
     }
   }
   
+  _sendEncodedMessage(String encodedMessage) {
+    if (webSocket != null && webSocket.readyState == WebSocket.OPEN) {
+      webSocket.send(encodedMessage);
+    } else {
+      print('WebSocket not connected, message $encodedMessage not sent');
+    }
+  }
+  
   _init([int retrySeconds = 2]) {
+    // Step 6
     bool encounteredError = false;
-    
     chatWindow.displayNotice("Connecting to Web socket");
     webSocket = new WebSocket(url);
     
