@@ -13,7 +13,7 @@ startLogging() {
       logFile = new File(msg);
       out = logFile.openOutputStream(FileMode.APPEND);
     } else {
-      time('writeString', () {
+      time('write to file', () {
         out.writeString("${new Date.now()} : $msg\n");
       });
     }

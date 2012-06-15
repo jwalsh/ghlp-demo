@@ -64,7 +64,7 @@ class ChatConnection {
     
     webSocket.on.message.add((e) {
       print('received message ${e.data}');
-      _receivedMessage(e.data);
+      _receivedEncodedMessage(e.data);
     });
   }
 }

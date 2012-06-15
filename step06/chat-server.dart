@@ -57,10 +57,11 @@ class ChatHandler {
       print('new ws msg: $message');
       connections.forEach((connection) {
         if (conn != connection) {
+          print('queued msg to be sent');
           queue(() => connection.send(message));
         }
       });
-      time('send msg', () => log.log(message));
+      time('send to isolate', () => log.log(message));
     };
     
     conn.onError = (e) {
