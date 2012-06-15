@@ -9,7 +9,7 @@ UsernameInput usernameInput;
 ChatWindow chatWindow;
 
 class ChatConnection {
-  // Step 06, add webSocket instance field
+  // Step 7, add webSocket instance field
   String url;
   
   ChatConnection(this.url) {
@@ -29,11 +29,11 @@ class ChatConnection {
   }
   
   _sendEncodedMessage(String encodedMessage) {
-    // Step 6, send the message over the WebSocket
+    // Step 7, send the message over the WebSocket
   }
   
   _init() {
-    // Step 6, connect to the WebSocket, listen for events
+    // Step 7, connect to the WebSocket, listen for events
   }
 }
 
