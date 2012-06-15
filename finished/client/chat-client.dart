@@ -37,7 +37,6 @@ class ChatConnection {
   }
   
   _init([int retrySeconds = 2]) {
-    // Step 6
     bool encounteredError = false;
     chatWindow.displayNotice("Connecting to Web socket");
     webSocket = new WebSocket(url);
