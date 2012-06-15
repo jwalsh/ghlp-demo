@@ -1,8 +1,7 @@
 #library('chat-client');
 
 #import('dart:html');
-
-// Step 5, import the JSON library
+#import('dart:json');
 
 // Step 6, rename this object
 ChatConnection connection;
@@ -19,11 +18,15 @@ class ChatConnection {
   }
   
   send(String from, String message) {
-    // Step 5, encode from and message into one JSON string
+    var encoded = JSON.stringify({'f': from, 'm': message});
+    _sendEncodedMessage(encoded);
   }
   
   _receivedEncodedMessage(String encodedMessage) {
-    // Step 5, decode a JSON string and display it in the chat window
+    Map message = JSON.parse(encodedMessage);
+    if (message['f'] != null) {
+      chatWindow.displayMessage(message['m'], message['f']);
+    }
   }
   
   _sendEncodedMessage(String encodedMessage) {

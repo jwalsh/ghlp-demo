@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>dartchat</title>
+  </head>
+  <body>
+  	<div>
+  		<textarea id="chat-display" rows="10" cols="100" disabled></textarea>
+  	</div>
+  	<div>
+  		<label for="chat-username">Username:</label>
+  		<input id="chat-username" name="chat-username" type="text">
+  	</div>
+  	<div>
+  		<label for="chat-message">Message:</label>
+  		<input id="chat-message" name="chat-message" type="text" disabled value="enter username...">
+  	</div>
+    <script type="application/dart" src="chat-client.dart" data-compiler="dart2js"></script>
+    <script src="dart.js"></script>
+  </body>
+</html>
