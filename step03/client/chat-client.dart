@@ -9,8 +9,8 @@ ChatConnection connection;
 MessageInput messageInput;
 UsernameInput usernameInput;
 
+// Step 3, Very first edit
 // Step 3, add variable for chat window
-ChatWindow chatWindow;
 
 class ChatConnection {
   // Step 7, add webSocket instance field
@@ -86,28 +86,14 @@ class UsernameInput extends View<InputElement> {
   String get username() => elem.value;
 }
 
-class ChatWindow extends View<TextAreaElement> {
-  ChatWindow(TextAreaElement elem) : super(elem);
-  
-  displayMessage(String msg, String from) {
-    _display("$from: $msg\n");
-  }
-  
-  displayNotice(String notice) {
-    _display("[system]: $notice\n");
-  }
-  
-  _display(String str) {
-    elem.text = "${elem.text}$str";
-  }
-}
+// Step 3, define the ChatWindow class
 
 main() {
   // Step 4, identify elements by ID
   TextAreaElement chatElem = null;
   InputElement usernameElem = null;
   InputElement messageElem = null;
-  chatWindow = new ChatWindow(chatElem);
+  // Step 3, instantiate chatWindow
   usernameInput = new UsernameInput(usernameElem);
   messageInput = new MessageInput(messageElem);
 
