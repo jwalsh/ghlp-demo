@@ -7,21 +7,23 @@
     <link rel="stylesheet" href="chat.css">
   </head>
   <body>
-    <h1>Dart Chat</h1>
+    <h1><img src='logo.png'/>Dart Chat</h1>
     
     <p>A client-server chat application written in Dart.</p>
     
   	<div>
-  		<textarea id="chat-display" rows="10" cols="100" disabled></textarea>
+  		<textarea id="chat-display" rows="10" disabled></textarea>
   	</div>
+  	
   	<div>
   		<label for="chat-username">Username:</label>
-  		<input id="chat-username" name="chat-username" type="text" size="20">
-  	</div>
-  	<div>
+  		<input id="chat-username" name="chat-username" type="text"0>
+    </div>
+    <div>
   		<label for="chat-message">Message:</label>
-  		<input id="chat-message" name="chat-message" type="text" disabled value="enter message..." size="50">
-  	</div>
+  		<input id="chat-message" name="chat-message" type="text" disabled value="enter message...">
+    </div>
+    
     <script type="application/dart" src="chat-client.dart" data-compiler="dart2js"></script>
     <script src="dart.js"></script>
   </body>

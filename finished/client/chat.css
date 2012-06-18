@@ -39,15 +39,19 @@ p {
 }
 
 textarea {
-  margin:0;
+  margin: 0;
 }
 
 label {
-  display:block;
-  width:80em;
-  padding TODO
+  display: block;
+  width: 20em;
+  margin-top: 5px;
 }
 
-input {
-  margin-left:15px
+h1 img {
+  margin-right: 0.5em;
+}
+
+#chat-display, #chat-message {
+  width: 100%;
 }
