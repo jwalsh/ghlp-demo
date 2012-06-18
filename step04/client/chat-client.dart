@@ -49,6 +49,11 @@ abstract class View<T> {
 class MessageInput extends View<InputElement> {
   MessageInput(InputElement elem) : super(elem);
   
+  bind() {
+    // Step 4, when the message input changes,
+    // send the message, display the message, and clear the message input
+  }
+  
   disable() {
     elem.disabled = true;
     elem.value = 'Enter username';
@@ -60,14 +65,7 @@ class MessageInput extends View<InputElement> {
   }
   
   String get message() => elem.value;
-  
-  bind() {
-    elem.on.change.add((e) {
-      connection.send(usernameInput.username, message);
-      chatWindow.displayMessage(message, usernameInput.username);
-      elem.value = '';
-    });
-  }
+
 }
 
 class UsernameInput extends View<InputElement> {
@@ -75,15 +73,12 @@ class UsernameInput extends View<InputElement> {
   
   bind() {
     // Step 4, handle change event for username input
-    elem.on.change.add((e) => _onUsernameChange());
   }
   
   _onUsernameChange() {
-    if (!elem.value.isEmpty()) {
-      messageInput.enable();
-    } else {
-      messageInput.disable();
-    }
+    // Step 4, enable the message input if username input
+    // is not empty, or disable the message input if username input
+    // is empty
   }
   
   String get username() => elem.value;
