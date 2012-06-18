@@ -1,15 +1,17 @@
 #library('chat-client');
 
 #import('dart:html');
-#import('dart:json');
 
-ChatConnection chatConnection;
+// Step 5, import the JSON library
+
+// Step 6, rename this object
+ChatConnection connection;
 MessageInput messageInput;
 UsernameInput usernameInput;
 ChatWindow chatWindow;
 
 class ChatConnection {
-  WebSocket webSocket;
+  // Step 7, add webSocket instance field
   String url;
   
   ChatConnection(this.url) {
@@ -17,54 +19,19 @@ class ChatConnection {
   }
   
   send(String from, String message) {
-    var encoded = JSON.stringify({'f': from, 'm': message});
-    _sendEncodedMessage(encoded);
+    // Step 5, encode from and message into one JSON string
   }
   
   _receivedEncodedMessage(String encodedMessage) {
-    Map message = JSON.parse(encodedMessage);
-    if (message['f'] != null) {
-      chatWindow.displayMessage(message['m'], message['f']);
-    }
+    // Step 5, decode a JSON string and display it in the chat window
   }
   
   _sendEncodedMessage(String encodedMessage) {
-    if (webSocket != null && webSocket.readyState == WebSocket.OPEN) {
-      webSocket.send(encodedMessage);
-    } else {
-      print('WebSocket not connected, message $encodedMessage not sent');
-    }
+    // Step 7, send the message over the WebSocket
   }
   
-  _init([int retrySeconds = 2]) {
-    bool encounteredError = false;
-    chatWindow.displayNotice("Connecting to Web socket");
-    webSocket = new WebSocket(url);
-    
-    webSocket.on.open.add((e) {
-      chatWindow.displayNotice('Connected');
-    });
-    
-    webSocket.on.close.add((e) {
-      chatWindow.displayNotice('web socket closed, retrying in $retrySeconds seconds');
-      if (!encounteredError) {
-        window.setTimeout(() => _init(retrySeconds*2), 1000*retrySeconds);
-      }
-      encounteredError = true;
-    });
-    
-    webSocket.on.error.add((e) {
-      chatWindow.displayNotice("Error connecting to ws");
-      if (!encounteredError) {
-        window.setTimeout(() => _init(retrySeconds*2), 1000*retrySeconds);
-      }
-      encounteredError = true;
-    });
-    
-    webSocket.on.message.add((e) {
-      print('received message ${e.data}');
-      _receivedEncodedMessage(e.data);
-    });
+  _init() {
+    // Step 7, connect to the WebSocket, listen for events
   }
 }
 
@@ -96,7 +63,7 @@ class MessageInput extends View<InputElement> {
   
   bind() {
     elem.on.change.add((e) {
-      chatConnection.send(usernameInput.username, message);
+      connection.send(usernameInput.username, message);
       chatWindow.displayMessage(message, usernameInput.username);
       elem.value = '';
     });
@@ -107,6 +74,7 @@ class UsernameInput extends View<InputElement> {
   UsernameInput(InputElement elem) : super(elem);
   
   bind() {
+    // Step 4, handle change event for username input
     elem.on.change.add((e) => _onUsernameChange());
   }
   
@@ -138,11 +106,13 @@ class ChatWindow extends View<TextAreaElement> {
 }
 
 main() {
-  TextAreaElement chatElem = query('#chat-display');
-  InputElement usernameElem = query('#chat-username');
-  InputElement messageElem = query('#chat-message');
+  // Step 4, identify elements by ID
+  TextAreaElement chatElem = null;
+  InputElement usernameElem = null;
+  InputElement messageElem = null;
   chatWindow = new ChatWindow(chatElem);
   usernameInput = new UsernameInput(usernameElem);
   messageInput = new MessageInput(messageElem);
-  chatConnection = new ChatConnection("ws://127.0.0.1:1337/ws");
+
+  connection = new ChatConnection("ws://127.0.0.1:1337/ws");
 }

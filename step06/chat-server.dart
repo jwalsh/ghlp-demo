@@ -78,6 +78,7 @@ runServer(String basePath, int port) {
   
   server.defaultRequestHandler = new StaticFileHandler(basePath).onRequest;
   server.addRequestHandler((req) => req.path == "/ws", wsHandler.onRequest);
+  server.onError = (error) => print(error);
   server.listen('127.0.0.1', 1337);
   print('listening for connections on $port');
 }

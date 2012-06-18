@@ -81,10 +81,6 @@ class UsernameInput extends View<InputElement> {
   }
   
   _onUsernameChange() {
-    _enableMessageInput();
-  }
-  
-  _enableMessageInput() {
     if (!elem.value.isEmpty()) {
       messageInput.enable();
     } else {
@@ -112,8 +108,12 @@ class ChatWindow extends View<TextAreaElement> {
 }
 
 main() {
-  chatWindow = new ChatWindow(document.query('#chat-display'));
-  usernameInput = new UsernameInput(document.query('#chat-username'));
-  messageInput = new MessageInput(document.query('#chat-message'));
+  TextAreaElement chatElem = query('#chat-display');
+  InputElement usernameElem = query('#chat-username');
+  InputElement messageElem = query('#chat-message');
+  chatWindow = new ChatWindow(chatElem);
+  usernameInput = new UsernameInput(usernameElem);
+  messageInput = new MessageInput(messageElem);
+  
   connection = new ChatConnection("ws://127.0.0.1:1337/ws");
 }
