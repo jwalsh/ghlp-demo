@@ -1,6 +1,6 @@
 #library('server-utils');
 
-#import('dart:io');
+#import('dart:isolate');
 
 time(msg, callback()) {
   var sw = new Stopwatch.start();

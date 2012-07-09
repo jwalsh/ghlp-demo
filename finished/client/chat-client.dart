@@ -61,7 +61,7 @@ class ChatConnection {
       encounteredError = true;
     });
     
-    webSocket.on.message.add((e) {
+    webSocket.on.message.add((MessageEvent e) {
       print('received message ${e.data}');
       _receivedEncodedMessage(e.data);
     });
