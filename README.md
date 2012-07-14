@@ -19,7 +19,7 @@ http://code.google.com/p/io-2012-dart-code-lab/source/checkout
 
 ## User 
 
-{user: {name: 'jwalsh'}
+{user: {name: 'jwalsh'}}
 
 ## Bid
 
