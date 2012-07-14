@@ -11,12 +11,13 @@
     
     <h1 class="status">Status</h1>
     <p>
-    	Player <span id="currentPlayer">none</span> has 
-    	<span id="currentTimeout">0s</span>
-    	to finish reviewing the bid of  
-    	<span id="prevBidCount"></span> 
-    	<span id="prevBidCount"></span>s
-    	 <span id="prevPlayer">none</span>.
+      Player <span id="currentPlayer">{status: {currentPlayer}}</span> has 
+      <span id="currentTimeout">{status: {currentTimeout}}</span>
+      to finish reviewing the bid of  
+      <span id="prevBidCount">{status: {bid: {count}}}</span> 
+      <span id="prevBidValue">{status: {bid: {value}}}</span>s
+      set by player 
+      <span id="prevPlayer">{status: {bid: {player}}}</span>.
     </p>	  
     
     <p>A client-server chat application written in Dart.</p>
