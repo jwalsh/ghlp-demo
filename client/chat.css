@@ -3,9 +3,10 @@
 /* BSD-style license that can be found in the LICENSE file. */
 
 body {
-  background-color: #F8F8F8;
+  background-color: black;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
+  font-color: white;
   font-weight: normal;
   line-height: 1.2em;
   margin: 15px;
@@ -13,6 +14,22 @@ body {
 
 p {
   color: #333;
+}
+
+#container {
+  width: 900px;
+  padding: 20px;
+  position: relative;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+#header{
+	float:left;
+}
+
+#body{
+	
 }
 
 #canvas-content {
@@ -52,6 +69,6 @@ h1 img {
   margin-right: 0.5em;
 }
 
-#chat-display, #chat-message {
-  width: 100%;
+#chat-display {
+  width: 50%;
 }
