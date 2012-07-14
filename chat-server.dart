@@ -42,19 +42,19 @@ class ChatHandler {
   ChatHandler(String basePath) : connections = new Set<WebSocketConnection>() {
     log.initLogging('${basePath}/chat-log.txt');
   }
-  
+
   // closures!
   onOpen(WebSocketConnection conn) {
-    print('new ws conn');
+    print('onOpen<WebSocketConnection>');
     connections.add(conn);
-    
+
     conn.onClosed = (int status, String reason) {
-      print('conn is closed');
+      print('conn.onClosed: $reason');
       connections.remove(conn);
     };
     
     conn.onMessage = (message) {
-      print('new ws msg: $message');
+      print('conn.onMessage: $message');
       connections.forEach((connection) {
         if (conn != connection) {
           print('queued msg to be sent');
@@ -68,6 +68,19 @@ class ChatHandler {
       print("problem w/ conn");
       connections.remove(conn); // onClosed isn't being called ??
     };
+
+    // Game status   
+    _sendGameState(mesg) {
+      connections.forEach((connection) {
+        if (conn != connection) {
+          print('queued msg to be sent');
+          queue(() => connection.send('publishGameState(): $mesg'));
+        }
+      });
+      new Timer(5000, _sendGameState('{status: {currentPlayer, currentTimeout, bid: {count, value, player}}}'));
+    }
+
+       
   }
 }
 
@@ -88,3 +101,4 @@ main() {
   var directory = script.directorySync();
   runServer("${directory.path}/client", 1337);
 }
+
