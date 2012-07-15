@@ -22,14 +22,27 @@ p {
   position: relative;
   border: 1px solid #ccc;
   background-color: white;
+  margin:auto;
 }
 
 #header{
 	float:left;
 }
 
-#body{
-	
+#yourNumbers {
+
+	font-size:5em;
+}
+
+#yourNumbers p{
+	padding:10px;
+	margin:auto;
+	font-size:1em;
+}
+
+
+#footer{
+	width:95%;
 }
 
 #canvas-content {
@@ -42,6 +55,10 @@ p {
 
 #summary {
   float: left;
+}
+
+#text {
+ 
 }
 
 #notes {
@@ -70,5 +87,5 @@ h1 img {
 }
 
 #chat-display {
-  width: 50%;
+  width: 70%;  
 }
