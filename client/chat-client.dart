@@ -9,6 +9,7 @@ UsernameInput usernameInput;
 ChatWindow chatWindow;
 BidButton bidButton;
 LiarButton liarButton;
+SpanElement yourNumbersElem;
 
 class ChatConnection {
   WebSocket webSocket;
@@ -19,17 +20,27 @@ class ChatConnection {
   }
 
   sendBid(String userName, String bidCount, String bidValue) {
-    var encoded = JSON.stringify({'userName': userName, 'bidCount': bidCount, 'bidValue': bidValue});
+    var encoded = JSON.stringify({'header': "clientBid", 'userName': userName, 'bidCount': bidCount, 'bidValue': bidValue});
     _sendEncodedMessage(encoded);
   }
 
   sendLiar(String userName) {
-    var encoded = JSON.stringify({'userName': userName, 'liar': true});
+    var encoded = JSON.stringify({'header': "clientLiar", 'userName': userName, 'liar': true});
+    _sendEncodedMessage(encoded);
+  }
+
+  sendJoin() {
+    var encoded = JSON.stringify({'header': "clientJoin"});
     _sendEncodedMessage(encoded);
   }
 
   _receivedEncodedMessage(String encodedMessage) {
     Map message = JSON.parse(encodedMessage);
+
+    if(message['header'] == "serverNumbers") {
+      yourNumbersElem.innerHTML = message['numbers'];
+    }
+
     if (message['userName'] != null) {
       chatWindow.displayMessage(message['userName'], "Server");
     }
@@ -45,11 +56,12 @@ class ChatConnection {
 
   _init([int retrySeconds = 2]) {
     bool encounteredError = false;
-    chatWindow.displayNotice("Connecting to Web socket");
+    chatWindow.displayNotice("Welcome to Liar's Poker");
     webSocket = new WebSocket(url);
 
     webSocket.on.open.add((e) {
-      chatWindow.displayNotice('Connected');
+      chatWindow.displayNotice('You are now playing.');
+      chatConnection.sendJoin();
     });
 
     webSocket.on.close.add((e) {
@@ -190,6 +202,7 @@ main() {
   InputElement messageElem = query('#chat-message');
   InputElement bidElem = query('#bidButton');
   InputElement liarElem = query('#liarButton');
+  yourNumbersElem = query('#yourNumbers');
 
   bidButton = new BidButton(bidElem);
   liarButton = new LiarButton(liarElem);
