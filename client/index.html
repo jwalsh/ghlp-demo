@@ -1,55 +1,72 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Dart Chat</title>
-    <link rel="stylesheet" href="chat.css">
-  </head>
-  <body>
-  <div id="container">
-  	<div id="header">
-    	<h1><img src='liars-poker-logo.png'/></h1>
-    </div>
-    <div id="body">
-    <h1 class="status">Status</h1>
-    <p>
-      Player <span id="currentPlayer">{status: {currentPlayer}}</span> has 
-      <span id="currentTimeout">{status: {currentTimeout}}</span>
-      to finish reviewing the bid of  
-      <span id="prevBidCount">{status: {bid: {count}}}</span> 
-      <span id="prevBidValue">{status: {bid: {value}}}</span>s
-      set by player 
-      <span id="prevPlayer">{status: {bid: {player}}}</span>.
-    </p>
+	
+	<head>
+    	<meta charset="utf-8">
+    	<title>Dart Chat</title>
+    	<link rel="stylesheet" href="chat.css">
+	</head>
 
-    <p>doitnowdoitgood, taywils, amyr, collinatherton, jwalsh</p>
-    
-    <p>A client-server chat application written in Dart.</p>
-    
-  	<div>
-  		<textarea id="chat-display" rows="10" disabled></textarea>
-  	</div>
-  	
-  	<div>
-  		<label for="chat-username">Username:</label>
-  		<input id="chat-username" name="chat-username" type="text">
-    </div>
-    <div>
-  		<label for="chat-message">Bid:</label>
-  		<input id="chat-message" name="chat-message" type="text" disabled size="2">
-    </div>
-    
-<div>
-  		
-  		<input id="bidButton" type="button" value="Bid">
-  		
-  		<input id="liarButton" type="button" value="Liar!">
-    </div>
-    
-    
-    
-    </div>
+	<body>
+
+	<div id="container">
+  
+	  	<div id="header">
+	    	<h1><img src='liars-poker-logo.png'/></h1>
+	    </div>
+
+	    <div id="body">
+	    
+	    	<div id="text">
+			    <h1 class="status">Status</h1>
+	    		<p>
+	    			Player <span id="currentPlayer">{status: {currentPlayer}}</span> has 
+					<span id="currentTimeout">{status: {currentTimeout}}</span>
+					to finish reviewing the bid of  
+		
+					<span id="prevBidCount">{status: {bid: {count}}}</span> 
+					<span id="prevBidValue">{status: {bid: {value}}}</span>s
+					set by player 
+					<span id="prevPlayer">{status: {bid: {player}}}</span>.
+				</p>
+	
+				<p>doitnowdoitgood, taywils, amyr, collinatherton, jwalsh</p>
+	    
+				<p>Just built this in Dart!</p>
+				
+				<div id="messages">
+			  		<textarea id="chat-display" rows="10" disabled></textarea>
+				</div>
+			  	
+			</div>	
+
+			<div id="footer">
+				<div id="inputSection"> 
+					<label for="chat-username">Username:</label>
+				  	<input id="chat-username" name="chat-username" type="text">
+
+					<p>
+						Bid:
+					  	<input id="chat-message" name="chat-message" type="text" disabled size="2">
+					  	<input id="bidButton" type="button" value="Bid">
+						<input id="liarButton" type="button" value="Liar!">
+						&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+						Your numbers are:
+						<span id="yourNumbers">78945</span>
+					</p>					
+				</div>
+
+			</div>
+			
+			
+
+					
+					
+			    
+			    
+			    
     
     </div>
     
