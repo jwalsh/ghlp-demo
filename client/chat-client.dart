@@ -19,8 +19,8 @@ class ChatConnection {
     _init();
   }
 
-  sendBid(String userName, String bidCount, String bidValue) {
-    var encoded = JSON.stringify({'header': "clientBid", 'userName': userName, 'bidCount': bidCount, 'bidValue': bidValue});
+  sendBid(String userName, String bid) {
+    var encoded = JSON.stringify({'header': "clientBid", 'userName': userName, 'bid': bid});
     _sendEncodedMessage(encoded);
   }
 
@@ -41,9 +41,18 @@ class ChatConnection {
       yourNumbersElem.innerHTML = message['numbers'];
     }
 
+    if(message['header'] == "serverYouWin") {
+      yourNumbersElem.innerHTML = "You Win!";
+    }
+
+    if(message['header'] == "serverYouLose") {
+      yourNumbersElem.innerHTML = "You Lose!";
+    }
+
     if (message['userName'] != null) {
       chatWindow.displayMessage(message['userName'], "Server");
     }
+
   }
 
   _sendEncodedMessage(String encodedMessage) {
@@ -61,8 +70,6 @@ class ChatConnection {
 
     webSocket.on.open.add((e) {
       chatWindow.displayNotice('You are now playing.');
-      // New player request
-      //chatConnection.sendJoin();
     });
 
     webSocket.on.close.add((e) {
@@ -116,8 +123,9 @@ class BidButton extends View<InputElement> {
     elem.on.click.add((e) {
       String count = messageInput.bidCount;
       String value = messageInput.bidValue;
+      String bid = count.concat(value);
       String message = "Bid [Count: $count, Value: $value]";
-      chatConnection.sendBid(usernameInput.username, count, value);
+      chatConnection.sendBid(usernameInput.username, bid);
       chatWindow.displayMessage(message, usernameInput.username);
     });
   }

@@ -77,7 +77,34 @@ class ChatHandler {
     };
 
     conn.onMessage = (message) {
+      Map msgParsed = JSON.parse(message);
+
       print('conn.onMessage: $message');
+
+      if(msgParsed['header'] == "clientBid"){
+        int clientBid = Math.parseInt(msgParsed['bid']);
+        if(clientBid > highestBid) {
+          highestBid = clientBid;
+        }
+      }
+
+      if(msgParsed['header'] == "clientLiar"){
+        String highBidStr = highestBid.toString();
+        var highBidCount = Math.parseInt(highBidStr[0]);
+        var highBidRank = Math.parseInt(highBidStr[1]);
+        createCounts();
+
+        if(rankCounts[highBidRank] >= highBidCount){
+          //Caller loses
+          var loseCode = JSON.stringify({'header': "serverYouLose"});
+          conn.send(loseCode);
+        } else {
+          //Caller Wins
+          var winCode = JSON.stringify({'header': "serverYouWin"});
+          conn.send(winCode);
+        }
+      }
+
       connections.forEach((connection) {
         if (conn != connection) {
           print('queued msg to be sent');
@@ -111,6 +138,7 @@ class ChatHandler {
 final gameNumberSize = 5;
 var gameNumbers;
 var rankCounts;
+int highestBid;
 
 class Player {
   var gameNumber;
@@ -178,6 +206,7 @@ class Game {
 main() {
   gameNumbers = [];
   rankCounts = [];
+  highestBid = 10;
 
   var script = new File(new Options().script);
   var directory = script.directorySync();
