@@ -61,7 +61,8 @@ class ChatConnection {
 
     webSocket.on.open.add((e) {
       chatWindow.displayNotice('You are now playing.');
-      chatConnection.sendJoin();
+      // New player request
+      //chatConnection.sendJoin();
     });
 
     webSocket.on.close.add((e) {

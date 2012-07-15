@@ -4,6 +4,7 @@
 #import('dart:isolate');
 #import('file-logger.dart', prefix: 'log');
 #import('server-utils.dart');
+#import('dart:json');
 
 /** Server Backend **/
 class StaticFileHandler {
@@ -60,12 +61,16 @@ class ChatHandler {
 
   // closures!
   onOpen(WebSocketConnection conn) {
+    /** Websocket Init **/
     print('onOpen<WebSocketConnection>');
     connections.add(conn);
     // Give the new user a hand of numbers when they first join
     String newNumbers = generateNumber();
-    conn.send({'header': "serverNumbers", 'numbers': newNumbers});
+    var encoded = JSON.stringify({'header': "serverNumbers", 'numbers': newNumbers});
+    conn.send(encoded);
+    /** end Websocket Init **/
 
+    /** websocket event handlers **/
     conn.onClosed = (int status, String reason) {
       print('conn.onClosed: $reason');
       connections.remove(conn);
