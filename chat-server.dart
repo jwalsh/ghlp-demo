@@ -7,9 +7,9 @@
 
 class StaticFileHandler {
   final String basePath;
-  
+
   StaticFileHandler(this.basePath);
-  
+
   _send404(HttpResponse response) {
     response.statusCode = HttpStatus.NOT_FOUND;
     response.outputStream.close();
@@ -31,14 +31,14 @@ class StaticFileHandler {
       } else {
         _send404(response);
       }
-    }); 
+    });
   }
 }
 
 class ChatHandler {
-  
+
   Set<WebSocketConnection> connections;
-  
+
   ChatHandler(String basePath) : connections = new Set<WebSocketConnection>() {
     log.initLogging('${basePath}/chat-log.txt');
   }
@@ -52,35 +52,34 @@ class ChatHandler {
       print('conn.onClosed: $reason');
       connections.remove(conn);
     };
-    
+
     conn.onMessage = (message) {
       print('conn.onMessage: $message');
       connections.forEach((connection) {
         if (conn != connection) {
           print('queued msg to be sent');
+          connection.send(message);
           queue(() => connection.send(message));
         }
       });
       time('send to isolate', () => log.log(message));
     };
-    
+
     conn.onError = (e) {
       print("problem w/ conn");
       connections.remove(conn); // onClosed isn't being called ??
     };
 
-    // Game status   
+    // Game status
     _sendGameState(mesg) {
       connections.forEach((connection) {
         if (conn != connection) {
           print('queued msg to be sent');
-          queue(() => connection.send('publishGameState(): $mesg'));
+          queue(() => conn.send('publishGameState(): $mesg'));
         }
       });
-      new Timer(5000, _sendGameState('{status: {currentPlayer, currentTimeout, bid: {count, value, player}}}'));
+      new Timer(1000, _sendGameState('{status: {currentPlayer, currentTimeout, bid: {count, value, player}}}'));
     }
-
-       
   }
 }
 
@@ -88,7 +87,7 @@ runServer(String basePath, int port) {
   HttpServer server = new HttpServer();
   WebSocketHandler wsHandler = new WebSocketHandler();
   wsHandler.onOpen = new ChatHandler(basePath).onOpen;
-  
+
   server.defaultRequestHandler = new StaticFileHandler(basePath).onRequest;
   server.addRequestHandler((req) => req.path == "/ws", wsHandler.onRequest);
   server.onError = (error) => print(error);
